@@ -1,0 +1,21 @@
+clc;
+clear all;
+close all;
+code_length=0;
+x=input ('Enter number of symbols:');
+for m=1:x
+symbols (m)=input ('Enter the symbol number:');
+p(m)=input('Enter the probability:');
+end
+Hx=0
+avglen=0
+for m=1:x
+dict=huffmandict (symbols,p);
+hcode=huffmanenco (m, dict)
+code_length=length (hcode);
+Hx=Hx+ (p(m)*(-log (p(m)))/(log(2)));
+avglen=avglen+ ((p(m)) * (code_length));
+end
+display (Hx);
+display (avglen);
+Efficiency=(Hx/avglen) *100
