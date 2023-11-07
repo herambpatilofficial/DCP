@@ -1,0 +1,30 @@
+clear all;
+clc;
+rand('twister', 5489); % To return rand() to its default initial state
+N = 500; % Length of data sequence
+N_DFT = 128; % Size of DFT and length of Auto-correlation to be computed
+Rx_sum = zeros(1, N_DFT);
+Sx_sum = zeros(1, N_DFT);
+for iter = 1:20 % To take the ensemble average over 20 realizations
+    w = rand(1, N) - 0.5; % N i.i.d. Random Variables uniformly distributed over [-0.5, 0.5]
+    
+    Rx = xcorr(w, w); % Auto-correlation of w[n]
+    Rx = Rx(N - N_DFT/2 + 1 : N + N_DFT/2);
+    
+    Sx = fftshift(fft(Rx)); % PSD of w[n]
+    
+    Rx_sum = Rx_sum + Rx; % Sum of correlations
+    Rx_avg = Rx_sum / iter; % Ensemble average of correlation
+
+    Sx_sum = Sx_sum + Sx; % Sum of PSDs
+    Sx_avg = Sx_sum / iter; % Ensemble average of PSDs
+end
+Sxmag = abs([Sx_avg Sx_avg(1)]);
+subplot(311), plot([0:99], w(1:100)), title('w[n]')
+subplot(312), plot([-N_DFT/2+1:N_DFT/2], Rx_avg), title('Autocorrelation w[n]')
+subplot(313), plot([-0.5:1/N_DFT:0.5], Sxmag), title('Power Spectral Density')
+variance = sum(w.^2) / N;
+Rx_avg_at_N_DFT_2 = Rx_avg(N_DFT/2);
+mean_Sxmag = mean(Sxmag);
+
+
