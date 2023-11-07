@@ -1,0 +1,43 @@
+clc;
+n = input("Enter n: ");
+k = input("Enter k: ");
+d = input("Enter data: ");
+G = input("Enter Generator Matrix: ");
+c = d * G;
+C = rem(c, 2);
+
+disp('Data is: ');
+disp(d);
+disp('Generator Matrix is: ');
+disp(G);
+disp('Code is: ');
+disp(C);
+p = input("Enter the Parity Matrix: ");
+h = horzcat(p.', eye(n-k));
+ec1 = vertcat(zeros(1, n), eye(n));
+ec2 = vertcat(zeros(1, n-k), h.');
+
+disp('Error Decoding Table: ');
+ec = horzcat(ec1, ec2);
+
+disp(ec);
+
+r = input("Enter the Received Message: ");
+s = mod(r * h.', 2);
+
+disp('Syndrome is (S): ');
+disp(s);
+
+if s == zeros(1, n-k)
+    disp('NO ERROR IN RECEIVED MESSAGE');
+else
+    disp('ERROR IN BIT');
+    d = find(ismember(ec2, s, 'rows'));
+    disp(d-1);
+    r(d-1) = mod(r(d-1) + 1, 2);
+    disp('CORRECTED CODEWORD IS: ');
+    R = xor(r, ec1(d-1));
+end
+
+disp(R);
+
