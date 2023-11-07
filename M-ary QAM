@@ -1,0 +1,11 @@
+clear all;
+close all;
+M = input ('please enter no of message symbol');
+SNR= input('enter SNR in db');
+x= randi (M-1,1000, 1);
+y= qammod (x,M);
+scatterplot (y);
+yn= awgn (y, SNR, 'measured');
+scatterplot (yn);
+xr= qamdemod (yn, M);
+[num_err, err_rate]= symerr (x, xr)
